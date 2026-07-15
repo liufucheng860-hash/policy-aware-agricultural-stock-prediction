@@ -98,17 +98,11 @@ pip install -r requirements.txt
 
 ## Data Availability
 
-This repository does not redistribute the full datasets used in the paper.
+The datasets used in this study were collected and organized by the authors. They include historical market data, agricultural policy-related information, and firm-level corporate event features for selected agricultural-related listed companies.
 
-The study uses:
+The experimental datasets are not publicly released in this repository due to source-specific access and redistribution considerations. They may be made available from the corresponding author upon reasonable request for academic research purposes.
 
-* Historical market data for selected Chinese agricultural-related listed companies;
-* Agricultural policy documents, including annual No.1 Central Documents;
-* Publicly disclosed corporate announcements and company-related event information.
-
-Raw market data and corporate-announcement data are not included because they may be subject to source-specific access or redistribution restrictions.
-
-Researchers who wish to reproduce the full workflow should obtain the required market data, policy documents, and corporate announcements from the corresponding public or licensed sources, and then run the preprocessing and feature-construction scripts provided in this repository.
+Contact: e1303008@u.nus.edu
 
 ## Experimental Setting
 
