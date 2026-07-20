@@ -52,14 +52,6 @@ def build_macro_policy_table() -> pd.DataFrame:
         + df["technology_focus"]
     )
 
-    df["jifeng_relevant_score"] = (
-        0.25 * df["machinery_focus"]
-        + 0.35 * df["smart_agri_focus"]
-        + 0.10 * df["seed_focus"]
-        + 0.10 * df["subsidy_support"]
-        + 0.20 * df["technology_focus"]
-    )
-
     return df
 
 
