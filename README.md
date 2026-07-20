@@ -46,17 +46,16 @@ The repository contains scripts for:
 build_macro_features.py          Macro-policy feature construction
 build_micro_features.py          Micro-event feature construction
 build_price_images.py            Price-pattern image construction
-train_image_model.py             Image-only model training
-train_macro_model.py             Macro-only model training
-train_micro_model.py             Micro-only model training
+train_image_only.py             Image-only model training
+train_macro_only.py             Macro-only model training
+train_micro_only.py             Micro-only model training
 train_image_macro.py             Image+Macro model training
 train_image_micro.py             Image+Micro model training
 train_macro_micro.py             Macro+Micro model training
 train_image_macro_micro.py       Full multimodal model training
-train_baselines.py               Sequential baseline models
-evaluate_metrics.py              Accuracy, Precision, Recall, F1, and MCC calculation
+train_multiple_baseline.py      Sequential baseline models
 analyze_dynamic_weight.py        Dynamic fusion weight analysis
-policy_event_analysis.py         Policy-event-aligned modality activation analysis
+analyze_policy_before_after.py         Policy-event-aligned modality activation analysis
 ```
 
 The exact file names may vary slightly depending on the local implementation version.
