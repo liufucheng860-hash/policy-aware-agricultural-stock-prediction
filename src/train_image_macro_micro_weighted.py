@@ -44,7 +44,6 @@ MACRO_FEATURE_COLUMNS = [
     "subsidy_support",
     "technology_focus",
     "macro_total_score",
-    "jifeng_relevant_score",
 ]
 
 MICRO_FEATURE_COLUMNS = [
