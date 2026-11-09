@@ -1,182 +1,53 @@
-# Interpretable Policy-Aware Multimodal Learning for Multi-Horizon Agricultural Stock Movement Prediction
+# Adaptive Content–Age Gated Fusion for Multimodal Agricultural Stock Movement Prediction
 
-This repository provides the source code for the paper:
+This repository accompanies the manuscript by Fucheng Liu and Chenxue Yang. Adaptive Temporal-Context Gated Fusion (ATGF) uses separate policy and corporate-event content–age encoders to condition a scalar gate between two market-conditioned content paths.
 
-> **Interpretable Policy-Aware Multimodal Learning for Multi-Horizon Agricultural Stock Movement Prediction**
+## Models
 
-The project studies agricultural-related stock movement prediction using a policy-aware multimodal learning framework. The framework integrates price-pattern image representations, macro-level agricultural policy features, and micro-level corporate event features, and evaluates their effectiveness across multiple prediction horizons.
+The PyTorch implementations used for the six-model comparison are in [src/atgf](src/atgf). Earlier feature-construction, training, and analysis scripts are in the parent [src](src) directory.
 
-## Overview
+| Model | Implementation |
+| --- | --- |
+| Content-Gated Baseline | `SchemeDModel(9, 23, ablation_mode="ordinary")` |
+| ATGF | `SchemeDModel(9, 23, ablation_mode="full")` |
+| ATGF-NoAge | `AgeControl(variant="noage", seed=1)` retains both context encoders and event presence and zeros both explicit age inputs |
+| Direct Content–Age Gate | `AgeControl(variant="direct", seed=1)` supplies content representations, encoded ages, and event presence directly to the gate |
+| Compact PatchTST | `CompactPatchTSTClassifier()` |
+| Compact iTransformer | `CompactITransformerClassifier()` |
 
-Stock movement prediction is challenging because financial markets are noisy, nonlinear, and affected by heterogeneous information sources. This project focuses on agricultural-related Chinese listed companies, whose stock movements may be influenced by both market patterns and agricultural policy signals.
+From the repository root, with PyTorch installed, the following example runs ATGF on synthetic inputs:
 
-The proposed framework includes:
+```python
+import torch
+from src.atgf.scheme_d_model import SchemeDModel
 
-* Image-based stock price representation;
-* Macro-level agricultural policy feature construction;
-* Micro-level corporate event feature construction;
-* Multimodal prediction under 5-day, 10-day, and 20-day horizons;
-* Static concatenation and softmax-gated dynamic fusion;
-* Evaluation using Accuracy, Precision, Recall, F1-score, and Matthews Correlation Coefficient (MCC);
-* Policy-event-aligned modality activation analysis.
-
-## Repository Content
-
-The repository contains source code and a [numeric market-feature sample](data/jifeng_numeric_sample.csv).
-
-The source code covers the following components:
-
-```text
-Feature construction
-Model training
-Baseline training
-Evaluation metrics
-MCC calculation
-Dynamic modality-weight analysis
-Policy-event-aligned analysis
+model = SchemeDModel(9, 23, ablation_mode="full").eval()
+with torch.no_grad():
+    result = model(
+        torch.zeros(2, 1, 6, 60), torch.zeros(2, 9), torch.zeros(2, 23),
+        days_since_policy=torch.tensor([10., 20.]),
+        days_since_event=torch.tensor([0., 3.]),
+        has_available_event=torch.tensor([0., 1.]),
+    )
+print(result["logits"].shape)  # torch.Size([2, 2])
 ```
 
-## Code Structure
+## Evaluation in the manuscript
 
-The repository contains scripts for:
+The development and external panels each contain four stocks. Per model and panel, the study averages 240 runs across four stocks, three horizons (5, 10, and 20 trading days), four policy-cycle folds (2022–2025), and five seeds (1, 7, 21, 42, 2024). Rolling splits enforce target-date boundaries between training, validation, and testing. Both panels had already been examined when NoAge and Direct were designed.
 
-```text
-build_macro_features.py          Macro-policy feature construction
-build_micro_features.py          Micro-event feature construction
-build_price_images.py            Price-pattern image construction
-train_image_only.py             Image-only model training
-train_macro_only.py             Macro-only model training
-train_micro_only.py             Micro-only model training
-train_image_macro.py             Image+Macro model training
-train_image_micro.py             Image+Micro model training
-train_macro_micro.py             Macro+Micro model training
-train_image_macro_micro.py       Full multimodal model training
-train_multiple_baseline.py      Sequential baseline models
-analyze_dynamic_weight.py        Dynamic fusion weight analysis
-analyze_policy_before_after.py         Policy-event-aligned modality activation analysis
-```
+Positive-class F1 and Matthews correlation coefficient (MCC) are reported for all six models. Average precision (AP) and predicted-positive rate (PPR) are also reported for the four gating configurations.
 
-The exact file names may vary slightly depending on the local implementation version.
+## Data availability
 
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/liufucheng860-hash/policy-aware-agricultural-stock-prediction.git
-cd policy-aware-agricultural-stock-prediction
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate the environment.
-
-For Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
-For macOS or Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Data Availability
-
-The datasets used in this study were collected and organized by the authors. They include historical market data, agricultural policy-related information, and firm-level corporate event features for selected agricultural-related listed companies.
-
-The [numeric sample](data/jifeng_numeric_sample.csv) contains the first 20 trading observations for Jifeng Technology in 2022. The columns give the trading date (YYYYMMDD), one-day return, five-day volatility, and the ratio of the closing price to its five-day moving average. Returns and ratios are expressed as decimals.
+**ATGF Code for Agricultural Stock Prediction** is the repository title used in the submission's research-data entry. The [numeric market-feature sample](data/jifeng_numeric_sample.csv) contains the first 20 trading observations for Jifeng Technology in 2022. Its columns are trading date (YYYYMMDD), one-day return, five-day volatility, and closing price divided by its five-day moving average. The sample illustrates the feature format. Reproducing the panel results requires the full aligned experimental inputs and evaluation workflow.
 
 For research access to the text, images, or associated annotations, please email [e1303008@u.nus.edu](mailto:e1303008@u.nus.edu). Access is subject to the source providers' redistribution terms.
 
-## Experimental Setting
-
-The main experiments are designed around four agricultural-related listed companies:
-
-```text
-Jifeng Technology
-First Tractor Co., Ltd.
-Xingguang Agricultural Machinery
-Longping High-Tech
-```
-
-The prediction horizons are:
-
-```text
-5-day
-10-day
-20-day
-```
-
-The evaluated modality configurations include:
-
-```text
-Image-only
-Macro-only
-Micro-only
-Image+Macro
-Image+Micro
-Macro+Micro
-Image+Macro+Micro
-```
-
-Sequential baseline models include:
-
-```text
-LSTM
-GRU
-Transformer Encoder
-```
-
-## Evaluation Metrics
-
-The experiments use the following classification metrics:
-
-```text
-Accuracy
-Precision
-Recall
-F1-score
-Matthews Correlation Coefficient (MCC)
-```
-
-MCC is included to provide a more reliable evaluation under class imbalance and potential prediction-collapse behavior.
-
-## Reproducibility Notes
-
-The public CSV illustrates the numeric feature format.
-
-A full reproduction requires users to prepare the required input data according to the data construction procedures described in the paper.
-
 ## Citation
 
-If you use this code, please cite the associated paper after publication.
-
-```bibtex
-@article{liu2026policyaware,
-  title={Interpretable Policy-Aware Multimodal Learning for Multi-Horizon Agricultural Stock Movement Prediction},
-  author={Liu, Fucheng and Yang, Chenxue},
-  year={2026},
-  note={Manuscript in preparation}
-}
-```
+Fucheng Liu and Chenxue Yang. *Adaptive Content–Age Gated Fusion for Multimodal Agricultural Stock Movement Prediction*. Manuscript.
 
 ## License
 
-This repository is released for academic and research purposes. Please refer to the `LICENSE` file for details.
-
-## Disclaimer
-
-This repository is intended for academic research only. The code and results do not constitute investment advice, trading advice, or financial recommendations.
+See [LICENSE](LICENSE) for the code license.
