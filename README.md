@@ -22,9 +22,7 @@ The proposed framework includes:
 
 ## Repository Content
 
-This repository currently contains the **source code only**.
-
-Raw data, processed datasets, model outputs, final tables, and figures are not included in this repository.
+The repository contains source code and a [numeric market-feature sample](data/jifeng_numeric_sample.csv).
 
 The source code covers the following components:
 
@@ -99,9 +97,9 @@ pip install -r requirements.txt
 
 The datasets used in this study were collected and organized by the authors. They include historical market data, agricultural policy-related information, and firm-level corporate event features for selected agricultural-related listed companies.
 
-The experimental datasets are not publicly released in this repository due to source-specific access and redistribution considerations. They may be made available from the corresponding author upon reasonable request for academic research purposes.
+The [numeric sample](data/jifeng_numeric_sample.csv) contains the first 20 trading observations for Jifeng Technology in 2022. The columns give the trading date (YYYYMMDD), one-day return, five-day volatility, and the ratio of the closing price to its five-day moving average. Returns and ratios are expressed as decimals.
 
-Contact: e1303008@u.nus.edu
+For research access to the text, images, or associated annotations, please email [e1303008@u.nus.edu](mailto:e1303008@u.nus.edu). Access is subject to the source providers' redistribution terms.
 
 ## Experimental Setting
 
@@ -158,9 +156,7 @@ MCC is included to provide a more reliable evaluation under class imbalance and 
 
 ## Reproducibility Notes
 
-Because raw data and processed datasets are not included, the repository is not intended to provide a one-command full reproduction package at the current stage.
-
-Instead, it provides the source-code implementation of the main experimental workflow, including feature construction, model training, evaluation, and policy-event analysis.
+The public CSV illustrates the numeric feature format.
 
 A full reproduction requires users to prepare the required input data according to the data construction procedures described in the paper.
 
